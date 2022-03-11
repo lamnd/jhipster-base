@@ -1,0 +1,51 @@
+application {
+  config {
+    baseName gateway,
+    packageName com.ippon.gateway,
+    applicationType gateway,
+    authenticationType oauth2,
+    databaseType sql,
+    devDatabaseType h2Disk,
+    prodDatabaseType postgresql,
+    enableHibernateCache false,
+    serviceDiscoveryType eureka,
+  }
+  entities Employee, ApiKey
+}
+
+application {
+  config {
+    baseName employee,
+    packageName com.ippon.employee,
+    applicationType microservice,
+    authenticationType oauth2,
+    databaseType sql,
+    devDatabaseType h2Disk,
+    prodDatabaseType postgresql,
+    enableHibernateCache false,
+    serverPort 8081,
+    serviceDiscoveryType eureka
+  }
+  entities Employee
+}
+
+entity Employee {
+  firstName String required,
+  lastName String required,
+  salary BigDecimal
+}
+
+entity ApiKey {
+    description String,
+    clientId String required
+}
+
+microservice Employee with employee
+
+
+deployment {
+  deploymentType docker-compose
+  appsFolders [gateway, employee]
+  dockerRepositoryName "jmicro"
+  monitoring no
+}
